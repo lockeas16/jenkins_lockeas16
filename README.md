@@ -12,8 +12,8 @@ Spring Pet Clinic java app in Maven.
 
 ## WEB
 
-Home: <http://localhost:9191>
+Home: <http://localhost:8181>
 
 ## METADATA
 
-Version: 0.1.0
+Version: 1.0.0
