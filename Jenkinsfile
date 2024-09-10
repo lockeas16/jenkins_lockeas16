@@ -24,5 +24,17 @@ pipeline {
                 echo 'Maven Build App Completed.'
             }
         }
+        stage('Test') {
+            steps {
+                    sh 'mvn test'
+                    echo 'Unit Tests Executed'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                    echo 'Unit Tests Report Published.'
+                }
+            }
+        }
     }
 }
