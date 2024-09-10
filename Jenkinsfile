@@ -82,4 +82,21 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            sh 'docker logout'
+            echo 'Docker Logged Out.'
+        }
+        success {
+            slackSend channel: '#jenkins', color: 'good', message: "Build deployed successfully - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        failure {
+            //slackSend failOnError:true, message:"Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            slackSend(
+                channel: '#jenkins',
+                color: 'danger',
+                message: "Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+            )
+        }
+    }
 }
