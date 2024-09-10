@@ -36,5 +36,43 @@ pipeline {
                 }
             }
         }
+        stage('DockerHub Login') {
+            steps {
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                echo 'Login Completed.'
+            }
+        }
+        stage('Build Docker Images') {
+            parallel {
+                stage('Current Tag') {
+                    steps{
+                        sh "docker build --tag $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:${params.IMAGE_TAG} ."
+                        echo 'Build Image Completed.'
+                    }
+                }
+                stage('Latest Tag') {
+                    steps{
+                        sh "docker build --tag $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:latest ."
+                        echo 'Build Image:latest Completed.'
+                    }
+                }
+            }
+        }
+        stage ('Push Image To DockerHub') {
+            parallel {
+                stage('Current Tag') {
+                    steps{
+                        sh "docker push $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:${params.IMAGE_TAG}"
+                        echo "Image $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:${params.IMAGE_TAG} pushed."
+                    }
+                }
+                stage('Latest Tag') {
+                    steps{
+                        sh "docker push $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:latest"
+                        echo "Image $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:latest pushed."
+                    }
+                }
+            }
+        }
     }
 }
