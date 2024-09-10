@@ -17,7 +17,11 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Stage para la construcción'
+                //sh 'mvn clean package'
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean package sonar:sonar'
+                }
+                echo 'Maven Build App Completed.'
             }
         }
     }
