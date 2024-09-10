@@ -74,5 +74,12 @@ pipeline {
                 }
             }
         }
+        stage ('Running App') {
+            steps {
+                sh "docker container rm --force ${params.CONTAINER_NAME}  2> /dev/null || echo 'El contenedor no existe'"
+                sh "docker run --name ${params.CONTAINER_NAME} --detach --rm --publish 8181:8181 $DOCKERHUB_CREDENTIALS_USR/${params.APP_NAME}:${params.IMAGE_TAG}"
+                echo "App Running In ${params.CONTAINER_NAME} Container."
+            }
+        }
     }
 }
